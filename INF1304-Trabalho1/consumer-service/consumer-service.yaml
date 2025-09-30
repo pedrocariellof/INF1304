@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer-service
+  template:
+    metadata:
+      labels:
+        app: consumer-service
+    spec:
+      containers:
+        - name: consumer-service
+          image: consumer-service:latest   # a imagem que você vai buildar com o Dockerfile
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KAFKA_BROKERS
+              value: "kafka1:9092"         # ou "kafka1:9092,kafka2:9092" se tiver mais brokers
+            - name: KAFKA_TOPIC
+              value: "dados-sensores"
+            - name: KAFKA_CONSUMER_GROUP
+              value: "consumer-service"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consumer-service
+spec:
+  type: NodePort
+  selector:
+    app: consumer-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30081   # acessível em http://localhost:30081/Processor/ws
