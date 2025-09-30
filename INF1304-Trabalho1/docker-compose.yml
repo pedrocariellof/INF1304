@@ -184,15 +184,18 @@ services:
   # Consumer service (processador) - instancia 0
   # - Recomendo Java Spring Boot com spring-kafka; use env vars no application.properties
   # -------------------------
-  consumer-service0:
+    consumer-service0:
     build: ./consumer-service
     container_name: consumer_service0
     ports:
-      - "8081:8080"   # mapeia para fora
+      - "8081:8080"
     environment:
       KAFKA_BROKERS: "kafka1:9092,kafka2:9093,kafka3:9094"
       KAFKA_TOPIC: "dados-sensores"
       KAFKA_CONSUMER_GROUP: "processadores-sensores"
+      DB_PATH: "/data/alerts.db"   
+    volumes:
+      - consumer0_data:/data       
     depends_on:
       - kafka1
       - kafka2
@@ -210,6 +213,9 @@ services:
       KAFKA_BROKERS: "kafka1:9092,kafka2:9093,kafka3:9094"
       KAFKA_TOPIC: "dados-sensores"
       KAFKA_CONSUMER_GROUP: "processadores-sensores"
+      DB_PATH: "/data/alerts.db"   
+    volumes:
+      - consumer1_data:/data
     depends_on:
       - kafka1
       - kafka2
@@ -217,6 +223,7 @@ services:
     networks:
       - int-network
       - ext-network
+
 
   # -------------------------
   # Frontend simples (opcional) - serve diretório ./frontend
@@ -248,3 +255,5 @@ volumes:
   kafka1_logs:
   kafka2_logs:
   kafka3_logs:
+  consumer0_data:
+  consumer1_data:
