@@ -184,7 +184,7 @@ services:
   # Consumer service (processador) - instancia 0
   # - Recomendo Java Spring Boot com spring-kafka; use env vars no application.properties
   # -------------------------
-    consumer-service0:
+  consumer-service0:
     build: ./consumer-service
     container_name: consumer_service0
     ports:
