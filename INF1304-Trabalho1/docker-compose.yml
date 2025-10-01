@@ -132,6 +132,7 @@ services:
       - kafka2
       - kafka3
     networks:
+      - int-network
       - ext-network
     restart: unless-stopped
 
@@ -154,7 +155,7 @@ services:
       KAFKA_BROKERS: "kafka1:9092,kafka2:9093,kafka3:9094"
       KAFKA_TOPIC: "dados-sensores"
       SENSOR_ID: "sensor-00"
-      SENSOR_INTERVAL: "1"   # segundos
+      SENSOR_INTERVAL: "5"   # segundos
     restart: unless-stopped
     networks:
       - int-network
@@ -174,7 +175,7 @@ services:
       KAFKA_BROKERS: "kafka1:9092,kafka2:9093,kafka3:9094"
       KAFKA_TOPIC: "dados-sensores"
       SENSOR_ID: "sensor-01"
-      SENSOR_INTERVAL: "2"
+      SENSOR_INTERVAL: "5"
     restart: unless-stopped
     networks:
       - int-network
@@ -193,9 +194,9 @@ services:
       KAFKA_BROKERS: "kafka1:9092,kafka2:9093,kafka3:9094"
       KAFKA_TOPIC: "dados-sensores"
       KAFKA_CONSUMER_GROUP: "processadores-sensores"
-      DB_PATH: "/data/alerts.db"   
+      DB_PATH: "/app/data/alerts.db"   
     volumes:
-      - consumer0_data:/data       
+      - ./consumer-service/data:/app/data    
     depends_on:
       - kafka1
       - kafka2
@@ -213,9 +214,9 @@ services:
       KAFKA_BROKERS: "kafka1:9092,kafka2:9093,kafka3:9094"
       KAFKA_TOPIC: "dados-sensores"
       KAFKA_CONSUMER_GROUP: "processadores-sensores"
-      DB_PATH: "/data/alerts.db"   
+      DB_PATH: "/app/data/alerts.db"   
     volumes:
-      - consumer1_data:/data
+      - ./consumer-service/data:/app/data
     depends_on:
       - kafka1
       - kafka2

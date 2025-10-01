@@ -59,14 +59,16 @@ public class DataProcessor {
                     try {
                         JSONObject json = new JSONObject(record.value());
                         String sensorId = json.optString("sensorId", "unknown");
-                        double temperatura = json.optDouble("temperature", -999);
-                        double vibracao = json.optDouble("vibration", -999);
+                        double temperatura = json.optDouble("temperatura", -1);
+                        double vibracao = json.optDouble("vibracao", -1);
 
+                        boolean isAlert = (temperatura > 30 || vibracao > 8);
+                        dbService.salvarLog(sensorId, temperatura, vibracao, isAlert);
+                        logger.info("Sended to db / creating db");
                         // Se for alerta (exemplo: temperatura > 50 ou vibração > 80)
-                        if (temperatura > 50 || vibracao > 80) {
+                        if (isAlert) {
                             logger.warn("⚠️ ALERTA: Sensor " + sensorId +
                                         " -> Temp: " + temperatura + ", Vib: " + vibracao);
-                            dbService.salvarAlerta(sensorId, temperatura, vibracao);
                         }
 
                     } catch (Exception e) {
