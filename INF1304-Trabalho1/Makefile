@@ -14,8 +14,8 @@ all: stop $(PRODUCER_JAR) $(CONSUMER_JAR) build up status
 stop:
 	@echo "Parando containers..."
 	docker ps -a
-	-docker stop consumer-service0 consumer-service1 producer-service0 producer-service1 kafka1 kafka2 kafka3 frontend1
-	-docker rm consumer-service0 consumer-service1 producer-service0 producer-service1 kafka1 kafka2 kafka3 frontend1
+	-docker stop consumer_service0 consumer_service1 producer_service0 producer_service1 kafka1 kafka2 kafka3 frontend1 kafdrop
+	-docker rm consumer_service0 consumer_service1 producer_service0 producer_service1 kafka1 kafka2 kafka3 frontend1 kafdrop
 	docker ps -a
 
 # Compila o produtor

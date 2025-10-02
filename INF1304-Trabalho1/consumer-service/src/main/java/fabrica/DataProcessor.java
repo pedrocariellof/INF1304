@@ -64,8 +64,6 @@ public class DataProcessor {
 
                         boolean isAlert = (temperatura > 30 || vibracao > 8);
                         dbService.salvarLog(sensorId, temperatura, vibracao, isAlert);
-                        logger.info("Sended to db / creating db");
-                        // Se for alerta (exemplo: temperatura > 50 ou vibração > 80)
                         if (isAlert) {
                             logger.warn("⚠️ ALERTA: Sensor " + sensorId +
                                         " -> Temp: " + temperatura + ", Vib: " + vibracao);
