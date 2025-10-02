@@ -1,5 +1,5 @@
-.PHONY: all stop producer consumer build up status frontend clean logs \
-	logs-producer logs-consumer logs-kafka logs-frontend
+.PHONY: all stop producer consumer build up status clean logs \
+	logs-producer logs-consumer logs-kafka
 
 # === Variáveis ===
 PRODUCER_DIR=producer-service
@@ -7,15 +7,15 @@ CONSUMER_DIR=consumer-service
 PRODUCER_JAR=$(PRODUCER_DIR)/target/producer-service-jar-with-dependencies.jar
 CONSUMER_JAR=$(CONSUMER_DIR)/target/consumer-service-jar-with-dependencies.jar
 
-# Alvo principal (roda tudo - menos o frontend)
+# Alvo principal (roda tudo)
 all: stop $(PRODUCER_JAR) $(CONSUMER_JAR) build up status
 
 # Para o que estiver rodando
 stop:
 	@echo "Parando containers..."
 	docker ps -a
-	-docker stop consumer_service0 consumer_service1 producer_service0 producer_service1 kafka1 kafka2 kafka3 frontend1 kafdrop
-	-docker rm consumer_service0 consumer_service1 producer_service0 producer_service1 kafka1 kafka2 kafka3 frontend1 kafdrop
+	-docker stop consumer_service0 consumer_service1 producer_service0 producer_service1 kafka1 kafka2 kafka3 kafdrop
+	-docker rm consumer_service0 consumer_service1 producer_service0 producer_service1 kafka1 kafka2 kafka3 kafdrop
 	docker ps -a
 
 # Compila o produtor

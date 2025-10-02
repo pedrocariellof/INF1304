@@ -35,7 +35,7 @@
                 <executions>
                 <execution>
                     <id>default-jar</id>
-                    <phase>none</phase> <!-- Isso desativa a criação do JAR padrão -->
+                    <phase>none</phase> 
                 </execution>
                 </executions>
             </plugin>
@@ -46,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                        <mainClass>fabrica.DataProcessor</mainClass> <!-- Substitua com o nome da sua classe principal -->
+                        <mainClass>fabrica.DataProcessor</mainClass> 
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.46.0.0</version> <!-- ou a versão estável mais recente -->
+            <version>3.46.0.0</version> 
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>

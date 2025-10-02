@@ -34,7 +34,6 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
       KAFKA_MIN_INSYNC_REPLICAS: 2
-      # Partições padrão (pode ser ignorado; preferir criação via kafka-topics)
       KAFKA_NUM_PARTITIONS: 6
     volumes:
       - kafka1_logs:/var/lib/kafka/data
@@ -118,7 +117,7 @@ services:
       - int-network
 
   # -------------------------
-  # Kafdrop (opcional) - UI para visualizar tópicos/partições
+  # Kafdrop - UI para visualizar tópicos/partições
   # -------------------------
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
@@ -145,7 +144,7 @@ services:
     container_name: producer_service0
     build: ./producer-service
     ports:
-      - "8080:8080"   # se o producer expõe endpoint HTTP para controle/metrics
+      - "8080:8080"   
     depends_on:
       - kafka1
       - kafka2
@@ -225,20 +224,6 @@ services:
       - int-network
       - ext-network
 
-
-  # -------------------------
-  # Frontend simples (opcional) - serve diretório ./frontend
-  # -------------------------
-  frontend:
-    container_name: frontend1
-    image: nginx:alpine
-    volumes:
-      - ./frontend:/usr/share/nginx/html:ro
-    ports:
-      - "8000:80"
-    networks:
-      - ext-network
-    restart: unless-stopped
 
 
 # -------------------------

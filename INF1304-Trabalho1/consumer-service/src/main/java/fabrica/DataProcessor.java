@@ -16,19 +16,35 @@ import fabrica.DatabaseService;
 
 import org.json.JSONObject;
 
+/**
+ * Classe responsável por consumir dados de sensores a partir do Kafka,
+ * processar as mensagens recebidas, armazenar em banco de dados e 
+ * transmitir via WebSocket para o frontend.
+ */
 public class DataProcessor {
+    /** Tópico Kafka a ser consumido (definido pela variável de ambiente KAFKA_TOPIC). */
     private static final String TOPIC = System.getenv().getOrDefault("KAFKA_TOPIC", "dados-sensores");
+    /** Endereço dos brokers Kafka (definido pela variável de ambiente KAFKA_BROKERS). */
     private static final String BOOTSTRAP_SERVERS = System.getenv().getOrDefault("KAFKA_BROKERS", "kafka1:9092");
+    /** Grupo de consumidores Kafka (definido pela variável de ambiente KAFKA_CONSUMER_GROUP). */
     private static final String GROUP_ID = System.getenv().getOrDefault("KAFKA_CONSUMER_GROUP", "consumer-service");
 
+    /** Logger para monitoramento da aplicação. */
     private static final Logger logger = LoggerFactory.getLogger(DataProcessor.class);
 
+    /**
+     * Método principal que inicializa o consumidor Kafka, 
+     * processa as mensagens recebidas e envia para o WebSocket.
+     *
+     * @param args Argumentos da linha de comando (não utilizados).
+     */
     public static void main(String[] args) {
         logger.info("Starting DataProcessor Consumer.");
 
-        // 🔹 cria instância do banco
+        // Cria instância do banco
         DatabaseService dbService = new DatabaseService();
 
+        // Configura propriedades do consumidor Kafka
         Properties props = new Properties();
         props.put("bootstrap.servers", BOOTSTRAP_SERVERS);
         props.put("group.id", GROUP_ID);
@@ -44,6 +60,7 @@ public class DataProcessor {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Collections.singletonList(TOPIC));
 
+        // Inicia servidor WebSocket
         WebSocketServer.startServer();
 
         try {
@@ -52,10 +69,10 @@ public class DataProcessor {
                 for (ConsumerRecord<String, String> record : records) {
                     logger.info("Received message: " + record.value());
 
-                    // 🔹 envia para frontend
+                    // Envia para frontend
                     WebSocketServer.broadcast(record.value());
 
-                    // 🔹 tenta parsear JSON
+                    // Processa JSON
                     try {
                         JSONObject json = new JSONObject(record.value());
                         String sensorId = json.optString("sensorId", "unknown");
