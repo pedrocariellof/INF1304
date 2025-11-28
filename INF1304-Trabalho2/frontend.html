@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste Simples de Lambda API</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 25px; }
+        input, button { padding: 10px; margin: 8px 0; width: 100%; box-sizing: border-box; border-radius: 4px; border: 1px solid #ddd; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; }
+        button:hover { background-color: #0056b3; }
+        #resultado { margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 4px; white-space: pre-wrap; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <h2>1. Consultar Produto</h2>
+        <input type="text" id="checkProductName" placeholder="Nome do Produto para Consultar">
+        <input type="email" id="checkCustomerEmail" placeholder="Seu E-mail">
+        <button onclick="consultarProduto()">Consultar Estoque</button>
+        
+        <hr>
+        
+        <h2>2. Atualizar Estoque</h2>
+        <input type="text" id="updateProductName" placeholder="Nome do Produto para Atualizar/Criar">
+        <input type="number" id="updateQuantity" placeholder="Nova Quantidade (0, 5, 10...)">
+        <button onclick="atualizarEstoque()">Atualizar Estoque</button>
+
+        <hr>
+        
+        <h2>Resultado da API:</h2>
+        <pre id="resultado">Aguardando operação...</pre>
+    </div>
+
+    <script>
+        const BASE_URL = "https://6rclt6hwqe.execute-api.us-east-1.amazonaws.com/TESTAPI";
+        const API_GATEWAY_URL_CHECK = `${BASE_URL}/check_product`; 
+        const API_GATEWAY_URL_UPDATE = `${BASE_URL}/update_stock`; 
+        
+
+        async function enviarDados(url, payload) {
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.textContent = `Enviando dados para ${url}...`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultadoDiv.textContent = "SUCESSO!\n" + JSON.stringify(data, null, 2);
+                } else {
+                    resultadoDiv.textContent = `FALHA (Status: ${response.status})\n` + JSON.stringify(data, null, 2);
+                }
+                
+            } catch (error) {
+                resultadoDiv.textContent = `🚨 ERRO DE CONEXÃO/REDE:\nVerifique o URL e o CORS no API Gateway.\nDetalhe: ${error.message}`;
+            }
+        }
+
+
+        async function consultarProduto() {
+            const productName = document.getElementById('checkProductName').value;
+            const customerEmail = document.getElementById('checkCustomerEmail').value;
+
+            if (!productName || !customerEmail) {
+                document.getElementById('resultado').textContent = "⚠️ Preencha Nome e E-mail.";
+                return;
+            }
+
+            const payload = {
+                product_name: productName,
+                customer_email: customerEmail
+            };
+
+            await enviarDados(API_GATEWAY_URL_CHECK, payload);
+        }
+
+
+        async function atualizarEstoque() {
+            const productName = document.getElementById('updateProductName').value;
+            const quantity = document.getElementById('updateQuantity').value;
+
+            if (!productName || quantity === '') {
+                document.getElementById('resultado').textContent = "⚠️ Preencha Nome e Quantidade.";
+                return;
+            }
+            
+            const payload = {
+                product_name: productName,
+                quantity: parseInt(quantity, 10) 
+            };
+
+            await enviarDados(API_GATEWAY_URL_UPDATE, payload);
+        }
+
+    </script>
+</body>
+</html>
